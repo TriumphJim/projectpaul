@@ -1,0 +1,98 @@
+// Initialize Firebase
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyB_MEgF_MWeUBqZ_4hUVh5ODr5pKy0GzNM",
+  authDomain: "projectpaul-bbc85.firebaseapp.com",
+  projectId: "projectpaul-bbc85",
+  storageBucket: "projectpaul-bbc85.appspot.com",
+  messagingSenderId: "1046360046156",
+  appId: "1:1046360046156:web:0c671f519baebfcc4a12e9",
+  measurementId: "G-EQ2PL6NRRD"
+};
+const app = firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const storage = firebase.storage();
+//test
+let phoneNumber = prompt("Please enter your phone number (e.g. +15551234567):");
+
+// Login Function
+function login() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+
+
+  auth.signInWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      const user = userCredential.user;
+      // User is logged in, hide login section and show app
+      document.getElementById('login-section').style.display = 'none';
+      document.getElementById('app-section').style.display = 'block';
+      
+        // 2FA verification 
+
+        if (user.phoneNumber === null) { // Check if phone number is not yet set
+            // Prompt user for their phone number
+            let phoneNumber = prompt("Please enter your phone number (e.g. +15551234567):");
+            if (phoneNumber) { // Check if user entered a phone number
+                auth.signInWithPhoneNumber(phoneNumber)
+                .then(confirmationResult => {
+    
+                    // Prompt user to enter the verification code
+                })
+                .catch(error => {
+                    // Handle errors
+                });
+            } else {
+                // User is already verified, proceed
+            };
+
+        }
+
+
+
+
+    })
+    .catch((error) => {
+
+    });
+  // ...
+}
+
+// Upload Image Function
+function uploadImage() {
+  const fileInput = document.getElementById('imageUpload');
+  const file = fileInput.files[0];
+  const storageRef = storage.ref(`images/${file.name}`); 
+  const uploadTask = storageRef.put(file);
+
+  uploadTask.on('state_changed', (snapshot) => {
+    // Track upload progress (optional)
+  }, (error) => {
+    // Handle upload errors
+  }, () => {
+    // Upload complete, get download URL
+    uploadTask.snapshot.ref.getDownloadURL()
+      .then((downloadURL) => {
+        console.log('File available at', downloadURL);
+        // Add downloadURL to your image list
+      });
+  });
+}
+
+// Function to display downloaded images (in your 'image-list' div)
+function displayImages() {
+  // Get a list of image files from your Firebase Storage
+  // (Example: You could get a list of all files or filter by specific names)
+  // Iterate over the files and add download links to the image-list div
+}
+
+// Call displayImages when the page loads to initially show images
+displayImages(); 
