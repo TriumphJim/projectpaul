@@ -1,25 +1,10 @@
-
 const path = require('path');
 
 module.exports = {
-  mode: 'development',
-  entry: './src/script.js',
+  entry: './src/script.js',  // Path to your main JavaScript file
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js',  // The name of the output file
+    path: path.resolve(__dirname, 'dist'),  // The output directory
   },
-  module: {
-    rules: [
-      {
-        test: /\.m?js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-        },
-      },
-    ],
-  },
-  resolve: {
-    extensions: ['.js'], // Automatically resolve certain extensions
-  },
+  mode: 'development',  // or 'production'
 };
